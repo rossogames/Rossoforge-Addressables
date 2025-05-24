@@ -1,0 +1,17 @@
+{
+  "name": "com.rossogames.rossoforge-addressables",
+  "version": "1.0.0",
+  "displayName": "RossoForge-Addressables",
+  "description": "-------------------------------------------",
+  "unity": "2025.0",
+  "author": {
+    "name": "Agustin Rosso",
+    "url": "https://www.linkedin.com/in/rossoagustin/"
+  },
+  "keywords": [
+    "addressable",
+    "addressables",
+    "rossogames",
+    "rossoforge"
+  ]
+}
