@@ -10,6 +10,17 @@ namespace RossoForge.Addressables
         private const string _defaultContainerKey = "default";
         private Dictionary<string, Dictionary<string, AsyncOperationHandle>> _handleMap = new();
 
+        public bool IsLoaded(string address)
+        {
+            return IsLoaded(_defaultContainerKey, address);
+        }
+
+        public bool IsLoaded(string containerKey, string address)
+        {
+            return _handleMap.TryGetValue(containerKey, out var container)
+                && container.ContainsKey(address);
+        }
+
         public Awaitable<T> LoadAsync<T>(string address) where T : Object
         {
             return LoadAsync<T>(_defaultContainerKey, address);
@@ -102,6 +113,9 @@ namespace RossoForge.Addressables
 
             if (container.TryGetValue(address, out var handler))
             {
+                if (handler.Result is not T)
+                    throw new System.InvalidCastException($"It is not possible to convert the addressable '{address}' of type {handler.Result.GetType().Name} to type {typeof(T).Name}");
+
                 result = handler.Result as T;
                 return true;
             }

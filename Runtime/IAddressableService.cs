@@ -5,6 +5,9 @@ namespace RossoForge.Addressables
 {
     public interface IAddressableService : IService
     {
+        bool IsLoaded(string address);
+        bool IsLoaded(string containerKey, string address);
+
         Awaitable<T> LoadAsync<T>(string address) where T : Object;
         Awaitable<T> LoadAsync<T>(string containerKey, string address) where T : Object;
 
