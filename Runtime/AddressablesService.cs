@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -36,11 +35,17 @@ namespace RossoForge.Addressables
             if (!_inProgressLoads.TryGetValue(address, out handle))
             {
                 handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<T>(address);
-                _inProgressLoads.Add(address, handle);
+                _inProgressLoads.TryAdd(address, handle);
             }
 
-            await handle.Task;
-            _inProgressLoads.Remove(address);
+            try
+            {
+                await handle.Task;
+            }
+            finally
+            {
+                _inProgressLoads.Remove(address);
+            }
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
@@ -95,7 +100,7 @@ namespace RossoForge.Addressables
                 if (handle.Value.IsValid())
                     UnityEngine.AddressableAssets.Addressables.Release(handle.Value);
             }
-            
+
             _handleMap.Remove(containerKey);
 #if UNITY_EDITOR
             Debug.Log($"Addressable container released: {containerKey}");
