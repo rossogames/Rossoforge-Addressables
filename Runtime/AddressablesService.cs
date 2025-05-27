@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -7,20 +8,23 @@ namespace RossoForge.Addressables
     public class AddressableService : IAddressableService
     {
         private const string _defaultContainerKey = "default";
-        private Dictionary<string, List<AsyncOperationHandle>> _handleMap = new();
+        private Dictionary<string, Dictionary<string, AsyncOperationHandle>> _handleMap = new();
 
-        public Awaitable<T> LoadAsync<T>(string address) where T : UnityEngine.Object
+        public Awaitable<T> LoadAsync<T>(string address) where T : Object
         {
-            return LoadAsync<T>(address, _defaultContainerKey);
+            return LoadAsync<T>(_defaultContainerKey, address);
         }
-        public async Awaitable<T> LoadAsync<T>(string address, string containerKey) where T : UnityEngine.Object
+        public async Awaitable<T> LoadAsync<T>(string containerKey, string address) where T : Object
         {
+            if (TryGetAddressable<T>(containerKey, address, out var result))
+                return result;
+
             AsyncOperationHandle<T> handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<T>(address);
             await handle.Task;
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
-                RegisterHandle(containerKey, handle);
+                RegisterHandle(containerKey, address, handle);
                 return handle.Result;
             }
 
@@ -30,62 +34,31 @@ namespace RossoForge.Addressables
             return null;
         }
 
-        public Awaitable<GameObject> InstantiateAsync(string address, Vector3 position, Quaternion rotation, Transform parent = null)
+        public void Release(string address)
         {
-            return InstantiateAsync(address, _defaultContainerKey, position, rotation, parent);
+            Release(_defaultContainerKey, address);
         }
-        public async Awaitable<GameObject> InstantiateAsync(string address, string containerKey, Vector3 position, Quaternion rotation, Transform parent = null)
-        {
-            AsyncOperationHandle<GameObject> handle = UnityEngine.AddressableAssets.Addressables.InstantiateAsync(address, position, rotation, parent);
-            await handle.Task;
 
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                RegisterHandle(containerKey, handle);
-                return handle.Result;
-            }
+        public void Release(string containerKey, string address)
+        {
+            if (!_handleMap.TryGetValue(containerKey, out var container))
+                throw new KeyNotFoundException($"Addressable container key '{containerKey}' not found.");
+
+            if (!container.TryGetValue(address, out var handler))
+                throw new KeyNotFoundException($"Addressable address '{address}' not found in container '{containerKey}'");
+
+            container.Remove(address);
+            UnityEngine.AddressableAssets.Addressables.Release(handler);
 
 #if UNITY_EDITOR
-            Debug.LogError($"Addressable load fail: {address}");
+            Debug.Log($"Addressable released: {address}");
 #endif
-            return null;
-        }
-
-        public Awaitable<IList<T>> LoadAssetsByLabelAsync<T>(string label) where T : UnityEngine.Object
-        { 
-            return LoadAssetsByLabelAsync<T>(label, _defaultContainerKey);
-        }
-        public async Awaitable<IList<T>> LoadAssetsByLabelAsync<T>(string label, string containerKey) where T : UnityEngine.Object
-        {
-            AsyncOperationHandle<IList<T>> handle = UnityEngine.AddressableAssets.Addressables.LoadAssetsAsync<T>(label, null);
-            await handle.Task;
-
-            if (handle.Status == AsyncOperationStatus.Succeeded)
-            {
-                RegisterHandle(containerKey, handle);
-                return handle.Result;
-            }
-
-#if UNITY_EDITOR
-            Debug.LogError($"Addressable load fail: {label}");
-#endif
-            return null;
-        }
-
-        public void Release<T>(T asset) where T : UnityEngine.Object
-        {
-            UnityEngine.AddressableAssets.Addressables.Release(asset);
-        }
-
-        public void ReleaseHandle(AsyncOperationHandle handle)
-        {
-            if (handle.IsValid())
-                UnityEngine.AddressableAssets.Addressables.Release(handle);
         }
 
         public void ReleaseAll()
-        { 
-            foreach (var container in _handleMap.Keys)
+        {
+            var containers = _handleMap.Keys.ToList();
+            foreach (var container in containers)
             {
                 ReleaseAll(container);
             }
@@ -94,27 +67,46 @@ namespace RossoForge.Addressables
 
         public void ReleaseAll(string containerKey)
         {
-            if (string.IsNullOrWhiteSpace(containerKey) || !_handleMap.ContainsKey(containerKey))
-                return;
+            if (!_handleMap.TryGetValue(containerKey, out var container))
+                throw new KeyNotFoundException($"Addressable container key '{containerKey}' not found.");
 
-            foreach (var handle in _handleMap[containerKey])
+            foreach (var handle in container)
             {
-                if (handle.IsValid())
-                    UnityEngine.AddressableAssets.Addressables.Release(handle);
+                if (handle.Value.IsValid())
+                    UnityEngine.AddressableAssets.Addressables.Release(handle.Value);
             }
-
+            
             _handleMap.Remove(containerKey);
+#if UNITY_EDITOR
+            Debug.Log($"Addressable container released: {containerKey}");
+#endif
         }
 
-        private void RegisterHandle<T>(string containerKey, AsyncOperationHandle<T> handle)
+        private void RegisterHandle<T>(string containerKey, string address, AsyncOperationHandle<T> handle)
         {
             if (!_handleMap.ContainsKey(containerKey))
-                _handleMap[containerKey] = new List<AsyncOperationHandle>();
+                _handleMap[containerKey] = new Dictionary<string, AsyncOperationHandle>();
 
-            _handleMap[containerKey].Add(handle);
+            _handleMap[containerKey].Add(address, handle);
 #if UNITY_EDITOR
-            Debug.Log($"Addressable loaded: {handle.DebugName}");
+            Debug.Log($"Addressable loaded: {address}");
 #endif
+        }
+
+        private bool TryGetAddressable<T>(string containerKey, string address, out T result) where T : Object
+        {
+            result = default;
+
+            if (!_handleMap.TryGetValue(containerKey, out var container))
+                return false;
+
+            if (container.TryGetValue(address, out var handler))
+            {
+                result = handler.Result as T;
+                return true;
+            }
+
+            return false;
         }
     }
 }
