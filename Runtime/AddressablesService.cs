@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
@@ -8,6 +9,7 @@ namespace RossoForge.Addressables
     public class AddressableService : IAddressableService
     {
         private const string _defaultContainerKey = "default";
+        private Dictionary<string, AsyncOperationHandle> _inProgressLoads = new();
         private Dictionary<string, Dictionary<string, AsyncOperationHandle>> _handleMap = new();
 
         public bool IsLoaded(string address)
@@ -30,13 +32,20 @@ namespace RossoForge.Addressables
             if (TryGetAddressable<T>(containerKey, address, out var result))
                 return result;
 
-            AsyncOperationHandle<T> handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<T>(address);
+            AsyncOperationHandle handle;
+            if (!_inProgressLoads.TryGetValue(address, out handle))
+            {
+                handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<T>(address);
+                _inProgressLoads.Add(address, handle);
+            }
+
             await handle.Task;
+            _inProgressLoads.Remove(address);
 
             if (handle.Status == AsyncOperationStatus.Succeeded)
             {
                 RegisterHandle(containerKey, address, handle);
-                return handle.Result;
+                return handle.Result as T;
             }
 
 #if UNITY_EDITOR
@@ -93,12 +102,12 @@ namespace RossoForge.Addressables
 #endif
         }
 
-        private void RegisterHandle<T>(string containerKey, string address, AsyncOperationHandle<T> handle)
+        private void RegisterHandle(string containerKey, string address, AsyncOperationHandle handle)
         {
             if (!_handleMap.ContainsKey(containerKey))
                 _handleMap[containerKey] = new Dictionary<string, AsyncOperationHandle>();
 
-            _handleMap[containerKey].Add(address, handle);
+            _handleMap[containerKey].TryAdd(address, handle);
 #if UNITY_EDITOR
             Debug.Log($"Addressable loaded: {address}");
 #endif
