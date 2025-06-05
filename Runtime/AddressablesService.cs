@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace RossoForge.Addressables
@@ -22,19 +23,42 @@ namespace RossoForge.Addressables
                 && container.ContainsKey(address);
         }
 
+        //address
         public Awaitable<T> LoadAsync<T>(string address) where T : Object
         {
             return LoadAsync<T>(_defaultContainerKey, address);
         }
-        public async Awaitable<T> LoadAsync<T>(string containerKey, string address) where T : Object
+        public Awaitable<T> LoadAsync<T>(string containerKey, string address) where T : Object
+        {
+            return LoadAsync<T>(
+                containerKey,
+                address,
+                () => UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<T>(address)
+            );
+        }
+
+        //AssetReference
+        public Awaitable<T> LoadAsync<T>(AssetReference assetReference) where T : Object
+        {
+            return LoadAsync<T>(_defaultContainerKey, assetReference);
+        }
+        public Awaitable<T> LoadAsync<T>(string containerKey, AssetReference assetReference) where T : Object
+        {
+            return LoadAsync<T>(
+                containerKey,
+                assetReference.AssetGUID,
+                () => assetReference.LoadAssetAsync<T>()
+            );
+        }
+
+        private async Awaitable<T> LoadAsync<T>(string containerKey, string address, System.Func<AsyncOperationHandle<T>> loadAsset) where T : Object
         {
             if (TryGetAddressable<T>(containerKey, address, out var result))
                 return result;
 
-            AsyncOperationHandle handle;
-            if (!_inProgressLoads.TryGetValue(address, out handle))
+            if (!_inProgressLoads.TryGetValue(address, out AsyncOperationHandle handle))
             {
-                handle = UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<T>(address);
+                handle = loadAsset();
                 _inProgressLoads.TryAdd(address, handle);
             }
 
