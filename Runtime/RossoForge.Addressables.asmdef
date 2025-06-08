@@ -4,7 +4,7 @@
     "references": [
         "Unity.Addressables",
         "Unity.ResourceManager",
-        "RossoForge.Services"
+        "RossoForge.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
