@@ -10,7 +10,7 @@
 **RossoForge - Addressables** Is a lightweight wrapper for Unity Addressables, designed to simplify asset loading, releasing, and reference handling across your project. Part of the RossoForge framework.
 
 The following dependencies must be installed
-com.unity.addressables
+*com.unity.addressables
 
 Watch the tutorial on [Pending]
 
