@@ -2,7 +2,7 @@
   "name": "com.rossogames.rossoforge-addressables",
   "version": "1.0.0",
   "displayName": "RossoForge-Addressables",
-  "description": "-------------------------------------------",
+  "description": "A lightweight wrapper for Unity Addressables, designed to simplify asset loading, releasing, and reference handling across your project. Part of the RossoForge framework."
   "unity": "2025.0",
   "author": {
     "name": "Agustin Rosso",
