@@ -12,8 +12,8 @@ namespace RossoForge.Addressables
         Awaitable<T> LoadAsync<T>(string address) where T : Object;
         Awaitable<T> LoadAsync<T>(string containerKey, string address) where T : Object;
 
-        Awaitable<T> LoadAsync<T>(AssetReference assetReference) where T : Object;
-        Awaitable<T> LoadAsync<T>(string containerKey, AssetReference assetReference) where T : Object;
+        Awaitable<T> LoadAsync<T>(AssetReferenceT<T> assetReference) where T : Object;
+        Awaitable<T> LoadAsync<T>(string containerKey, AssetReferenceT<T> assetReference) where T : Object;
 
         void Release(string address);
         void Release(string containerKey, string address);

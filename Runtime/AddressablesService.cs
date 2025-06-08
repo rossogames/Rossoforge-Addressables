@@ -38,11 +38,11 @@ namespace RossoForge.Addressables
         }
 
         //AssetReference
-        public Awaitable<T> LoadAsync<T>(AssetReference assetReference) where T : Object
+        public Awaitable<T> LoadAsync<T>(AssetReferenceT<T> assetReference) where T : Object
         {
             return LoadAsync<T>(_defaultContainerKey, assetReference);
         }
-        public Awaitable<T> LoadAsync<T>(string containerKey, AssetReference assetReference) where T : Object
+        public Awaitable<T> LoadAsync<T>(string containerKey, AssetReferenceT<T> assetReference) where T : Object
         {
             return LoadAsync<T>(
                 containerKey,
