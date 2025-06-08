@@ -11,6 +11,7 @@
 
 The following dependencies must be installed
 * com.unity.addressables
+* [Rossoforge-Core](https://github.com/rossogames/Rossoforge-Core.git)
 
 Watch the tutorial on [Pending]
 
