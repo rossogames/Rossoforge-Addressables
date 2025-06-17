@@ -11,11 +11,11 @@
 
 **Version**: Unity 6 or higher
 
-The following dependencies must be installed
+**Tutorial**: [Pending]
+
+**Dependencies**
 * com.unity.addressables
 * [Rossoforge-Core](https://github.com/rossogames/Rossoforge-Core.git)
-
-Watch the tutorial on [Pending]
 
 #
 This package is part of the **RossoForge** suite, designed to streamline and enhance Unity development workflows.
