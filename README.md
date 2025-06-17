@@ -8,6 +8,7 @@
 </table>
 
 **RossoForge - Addressables** Is a lightweight wrapper for Unity Addressables, designed to simplify asset loading, releasing, and reference handling across your project. Part of the RossoForge framework.
+
 Works on Unity 6 or higher versions
 
 The following dependencies must be installed
