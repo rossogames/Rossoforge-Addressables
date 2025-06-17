@@ -41,7 +41,7 @@ await _addressableService.LoadAssetAsync<GameObject>("enemy");
 await _addressableService.LoadAssetAsync<Sprite>("icon");
 
 // Load many by label
-_addressableService.LoadAssetsAsync<GameObject>("World1");
+await _addressableService.LoadAssetsAsync<GameObject>("World1");
 
 _addressableService.Release("enemy");
 _addressableService.ReleaseAll();
