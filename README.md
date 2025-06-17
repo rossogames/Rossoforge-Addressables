@@ -36,8 +36,12 @@ ServiceLocator.Initialize();
 // Anywhere in your code
 var _addressableService = ServiceLocator.Get<IAddressableService>();
 
-await _addressableService.LoadAsync<GameObject>("enemy");
-await _addressableService.LoadAsync<Sprite>("icon");
+// Load one by address
+await _addressableService.LoadAssetAsync<GameObject>("enemy");
+await _addressableService.LoadAssetAsync<Sprite>("icon");
+
+// Load many by label
+_addressableService.LoadAssetsAsync<GameObject>("World1");
 
 _addressableService.Release("enemy");
 _addressableService.ReleaseAll();
