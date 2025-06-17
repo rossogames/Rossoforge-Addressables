@@ -25,27 +25,63 @@ namespace RossoForge.Addressables
         }
 
         //address
-        public Awaitable<T> LoadAsync<T>(string address) where T : Object
+        public Awaitable<T> LoadAssetAsync<T>(string address) where T : Object
         {
-            return LoadAsync<T>(_defaultContainerKey, address);
+            return LoadAssetAsync<T>(_defaultContainerKey, address);
         }
-        public Awaitable<T> LoadAsync<T>(string containerKey, string address) where T : Object
+        public Awaitable<T> LoadAssetAsync<T>(string containerKey, string address) where T : Object
         {
-            return LoadAsync<T>(
+            return LoadAssetAsync<T>(
                 containerKey,
                 address,
                 () => UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<T>(address)
             );
         }
 
-        //AssetReference 
-        public Awaitable<T> LoadAsync<T>(AssetReferenceT<T> assetReference) where T : Object
+        public Awaitable<IList<T>> LoadAssetsAsync<T>(string label, System.Action<T> callback = null) where T : Object
         {
-            return LoadAsync<T>(_defaultContainerKey, assetReference);
+            return LoadAssetsAsync<T>(_defaultContainerKey, label, callback);
         }
-        public Awaitable<T> LoadAsync<T>(string containerKey, AssetReferenceT<T> assetReference) where T : Object
+        public async Awaitable<IList<T>> LoadAssetsAsync<T>(string containerKey, string label, System.Action<T> callback = null) where T : Object
         {
-            return LoadAsync<T>(
+            if (TryGetAddressable<IList<T>>(containerKey, label, out var result))
+                return result;
+
+            if (!_inProgressLoads.TryGetValue(label, out AsyncOperationHandle handle))
+            {
+                handle = UnityEngine.AddressableAssets.Addressables.LoadAssetsAsync<T>(label, callback);
+                _inProgressLoads.TryAdd(label, handle);
+            }
+
+            try
+            {
+                await handle.Task;
+            }
+            finally
+            {
+                _inProgressLoads.Remove(label);
+            }
+
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                RegisterHandle(containerKey, label, handle);
+                return handle.Result as IList<T>;
+            }
+
+#if UNITY_EDITOR
+            Debug.LogError($"Addressable load fail: {label}");
+#endif
+            return null;
+        }
+
+        //AssetReference 
+        public Awaitable<T> LoadAssetAsync<T>(AssetReferenceT<T> assetReference) where T : Object
+        {
+            return LoadAssetAsync<T>(_defaultContainerKey, assetReference);
+        }
+        public Awaitable<T> LoadAssetAsync<T>(string containerKey, AssetReferenceT<T> assetReference) where T : Object
+        {
+            return LoadAssetAsync<T>(
                 containerKey,
                 assetReference.AssetGUID,
                 () => assetReference.LoadAssetAsync<T>()
@@ -108,7 +144,7 @@ namespace RossoForge.Addressables
             Debug.Log($"Addressable loaded: {address}");
 #endif
         }
-        private bool TryGetAddressable<T>(string containerKey, string address, out T result) where T : Object
+        private bool TryGetAddressable<T>(string containerKey, string address, out T result) where T : class
         {
             result = default;
 
@@ -126,7 +162,8 @@ namespace RossoForge.Addressables
 
             return false;
         }
-        private async Awaitable<T> LoadAsync<T>(string containerKey, string address, System.Func<AsyncOperationHandle<T>> loadAsset) where T : Object
+
+        private async Awaitable<T> LoadAssetAsync<T>(string containerKey, string address, System.Func<AsyncOperationHandle<T>> loadAsset) where T : Object
         {
             if (TryGetAddressable<T>(containerKey, address, out var result))
                 return result;
