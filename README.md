@@ -2,12 +2,12 @@
 
 <table>
   <tr>
-    <td><img src="https://github.com/rossogames/Rossoforge-Addressables/blob/master/logo.png?raw=true" alt="RossoForge" width="64"/></td>
-    <td><h2>RossoForge - Addressables</h2></td>
+    <td><img src="https://github.com/rossogames/Rossoforge-Addressables/blob/master/logo.png?raw=true" alt="Rossoforge" width="64"/></td>
+    <td><h2>Rossoforge - Addressables</h2></td>
   </tr>
 </table>
 
-**RossoForge - Addressables** Is a lightweight wrapper for Unity Addressables, designed to simplify asset loading, releasing, and reference handling across your project. Part of the RossoForge framework.
+**Rossoforge - Addressables** Is a lightweight wrapper for Unity Addressables, designed to simplify asset loading, releasing, and reference handling across your project. Part of the RossoForge framework.
 
 **Version**: Unity 6 or higher
 
