@@ -7,7 +7,7 @@
   </tr>
 </table>
 
-**Rossoforge - Addressables** Is a lightweight wrapper for Unity Addressables, designed to simplify asset loading, releasing, and reference handling across your project. Part of the RossoForge framework.
+**Rossoforge-Addressables** Is a lightweight wrapper for Unity Addressables, designed to simplify asset loading, releasing, and reference handling across your project
 
 **Version**: Unity 6 or higher
 
@@ -48,7 +48,7 @@ _addressableService.ReleaseAll();
 ```
 
 #
-This package is part of the **RossoForge** suite, designed to streamline and enhance Unity development workflows.
+This package is part of the **Rossoforge** suite, designed to streamline and enhance Unity development workflows.
 
 Developed by Agustin Rosso
 https://www.linkedin.com/in/rossoagustin/
