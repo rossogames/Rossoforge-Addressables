@@ -11,11 +11,12 @@
 
 **Version**: Unity 6 or higher
 
-**Tutorial**: [Pending]
+**Tutorial**: https://www.youtube.com/watch?v=XRndLQZDVzM
 
 **Dependencies**
 * com.unity.addressables
 * [Rossoforge-Core](https://github.com/rossogames/Rossoforge-Core.git)
+* [[Rossoforge-Service]](https://github.com/rossogames/Rossoforge-Services.git) (Opcional)
 
 #
 With this package, you can:
