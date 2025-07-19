@@ -1,10 +1,10 @@
 {
-    "name": "RossoForge.Addressables",
-    "rootNamespace": "RossoForge.Addressables",
+    "name": "Rossoforge.Addressables",
+    "rootNamespace": "Rossoforge.Addressables",
     "references": [
         "Unity.Addressables",
         "Unity.ResourceManager",
-        "RossoForge.Core"
+        "Rossoforge.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,11 +1,11 @@
-using RossoForge.Core.Addressables;
+using Rossoforge.Core.Addressables;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace RossoForge.Addressables
+namespace Rossoforge.Addressables
 {
     public class AddressableService : IAddressableService
     {
