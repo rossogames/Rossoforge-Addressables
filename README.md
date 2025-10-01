@@ -9,14 +9,15 @@
 
 **Rossoforge-Addressables** Is a lightweight wrapper for Unity Addressables, designed to simplify asset loading, releasing, and reference handling across your project
 
-**Version**: Unity 6 or higher
+#
+**Version:** Unity 6 or higher
 
-**Tutorial**: https://www.youtube.com/watch?v=XRndLQZDVzM
+**Tutorial:** https://www.youtube.com/watch?v=XRndLQZDVzM (Spanish)
 
-**Dependencies**
+**Dependencies:**
 * com.unity.addressables
 * [Rossoforge-Core](https://github.com/rossogames/Rossoforge-Core.git)
-* [[Rossoforge-Service]](https://github.com/rossogames/Rossoforge-Services.git) (Opcional)
+* [Rossoforge-Service](https://github.com/rossogames/Rossoforge-Services.git) (Opcional)
 
 #
 With this package, you can:
