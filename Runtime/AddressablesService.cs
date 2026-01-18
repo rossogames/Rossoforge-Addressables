@@ -1,4 +1,5 @@
 using Rossoforge.Core.Addressables;
+using Rossoforge.Utils.Logger;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -68,9 +69,7 @@ namespace Rossoforge.Addressables
                 return handle.Result as IList<T>;
             }
 
-#if UNITY_EDITOR
-            Debug.LogError($"Addressable load fail: {label}");
-#endif
+            RossoLogger.Error($"Addressable load fail: {label}");
             return null;
         }
 
@@ -104,9 +103,7 @@ namespace Rossoforge.Addressables
             container.Remove(address);
             UnityEngine.AddressableAssets.Addressables.Release(handler);
 
-#if UNITY_EDITOR
-            Debug.Log($"Addressable released: {address}");
-#endif
+            RossoLogger.Info($"Addressable released: {address}");
         }
         public void ReleaseAll()
         {
@@ -129,9 +126,7 @@ namespace Rossoforge.Addressables
             }
 
             _handleMap.Remove(containerKey);
-#if UNITY_EDITOR
-            Debug.Log($"Addressable container released: {containerKey}");
-#endif
+            RossoLogger.Info($"Addressable container released: {containerKey}");
         }
 
         private void RegisterHandle(string containerKey, string address, AsyncOperationHandle handle)
@@ -140,9 +135,7 @@ namespace Rossoforge.Addressables
                 _handleMap[containerKey] = new Dictionary<string, AsyncOperationHandle>();
 
             _handleMap[containerKey].TryAdd(address, handle);
-#if UNITY_EDITOR
-            Debug.Log($"Addressable loaded: {address}");
-#endif
+            RossoLogger.Info($"Addressable loaded: {address}");
         }
         private bool TryGetAddressable<T>(string containerKey, string address, out T result) where T : class
         {
@@ -189,9 +182,7 @@ namespace Rossoforge.Addressables
                 return handle.Result as T;
             }
 
-#if UNITY_EDITOR
-            Debug.LogError($"Addressable load fail: {address}");
-#endif
+            RossoLogger.Error($"Addressable load fail: {address}");
             return null;
         }
     }

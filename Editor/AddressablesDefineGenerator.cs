@@ -19,7 +19,7 @@ namespace Rossoforge.Addressables.Editor
 
         static void Progress()
         {
-            if (!listRequest.IsCompleted) 
+            if (!listRequest.IsCompleted)
                 return;
 
             if (listRequest.Status == StatusCode.Success)
