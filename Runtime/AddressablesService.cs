@@ -1,4 +1,5 @@
 using Rossoforge.Core.Addressables;
+using Rossoforge.Utils.Logger;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -69,7 +70,7 @@ namespace Rossoforge.Addressables
             }
 
 #if UNITY_EDITOR
-            Debug.LogError($"Addressable load fail: {label}");
+            RossoLogger.Error($"Addressable load fail: {label}");
 #endif
             return null;
         }
@@ -105,7 +106,7 @@ namespace Rossoforge.Addressables
             UnityEngine.AddressableAssets.Addressables.Release(handler);
 
 #if UNITY_EDITOR
-            Debug.Log($"Addressable released: {address}");
+            RossoLogger.Info($"Addressable released: {address}");
 #endif
         }
         public void ReleaseAll()
@@ -130,7 +131,7 @@ namespace Rossoforge.Addressables
 
             _handleMap.Remove(containerKey);
 #if UNITY_EDITOR
-            Debug.Log($"Addressable container released: {containerKey}");
+            RossoLogger.Info($"Addressable container released: {containerKey}");
 #endif
         }
 
@@ -141,7 +142,7 @@ namespace Rossoforge.Addressables
 
             _handleMap[containerKey].TryAdd(address, handle);
 #if UNITY_EDITOR
-            Debug.Log($"Addressable loaded: {address}");
+            RossoLogger.Info($"Addressable loaded: {address}");
 #endif
         }
         private bool TryGetAddressable<T>(string containerKey, string address, out T result) where T : class
@@ -190,7 +191,7 @@ namespace Rossoforge.Addressables
             }
 
 #if UNITY_EDITOR
-            Debug.LogError($"Addressable load fail: {address}");
+            RossoLogger.Error($"Addressable load fail: {address}");
 #endif
             return null;
         }
