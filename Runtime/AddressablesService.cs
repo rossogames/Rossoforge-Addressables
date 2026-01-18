@@ -69,9 +69,7 @@ namespace Rossoforge.Addressables
                 return handle.Result as IList<T>;
             }
 
-#if UNITY_EDITOR
             RossoLogger.Error($"Addressable load fail: {label}");
-#endif
             return null;
         }
 
@@ -105,9 +103,7 @@ namespace Rossoforge.Addressables
             container.Remove(address);
             UnityEngine.AddressableAssets.Addressables.Release(handler);
 
-#if UNITY_EDITOR
             RossoLogger.Info($"Addressable released: {address}");
-#endif
         }
         public void ReleaseAll()
         {
@@ -130,9 +126,7 @@ namespace Rossoforge.Addressables
             }
 
             _handleMap.Remove(containerKey);
-#if UNITY_EDITOR
             RossoLogger.Info($"Addressable container released: {containerKey}");
-#endif
         }
 
         private void RegisterHandle(string containerKey, string address, AsyncOperationHandle handle)
@@ -141,9 +135,7 @@ namespace Rossoforge.Addressables
                 _handleMap[containerKey] = new Dictionary<string, AsyncOperationHandle>();
 
             _handleMap[containerKey].TryAdd(address, handle);
-#if UNITY_EDITOR
             RossoLogger.Info($"Addressable loaded: {address}");
-#endif
         }
         private bool TryGetAddressable<T>(string containerKey, string address, out T result) where T : class
         {
@@ -190,9 +182,7 @@ namespace Rossoforge.Addressables
                 return handle.Result as T;
             }
 
-#if UNITY_EDITOR
             RossoLogger.Error($"Addressable load fail: {address}");
-#endif
             return null;
         }
     }
