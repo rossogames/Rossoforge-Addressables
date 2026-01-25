@@ -1,6 +1,6 @@
 {
   "name": "com.rossogames.rossoforge-addressables",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "displayName": "Rossoforge-Addressables",
   "description": "A lightweight wrapper for Unity Addressables, designed to simplify asset loading, releasing, and reference handling across your project.",
   "unity": "2025.0",
