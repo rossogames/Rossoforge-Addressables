@@ -18,7 +18,7 @@
 * com.unity.addressables
 * [Rossoforge-Core](https://github.com/rossogames/Rossoforge-Core.git)
 * [Rossoforge-Utils](https://github.com/rossogames/Rossoforge-Utils.git)
-* [Rossoforge-Service](https://github.com/rossogames/Rossoforge-Services.git) (Opcional)
+* [Rossoforge-Service](https://github.com/rossogames/Rossoforge-Services.git)
 
 #
 With this package, you can:
@@ -33,7 +33,8 @@ With this package, you can:
 ```csharp
 // Setup
 ServiceLocator.SetLocator(new DefaultServiceLocator());
-ServiceLocator.Register<IAddressableService>(new AddressableService());
+var addressableService = new AddressableService();
+ServiceLocator.Register<IAddressableService>(addressableService);
 ServiceLocator.Initialize();
 
 // Anywhere in your code
